@@ -16,21 +16,36 @@ const generateSuggestionsAPI = (
             id: "role",
             displayName: "Papel (Role)",
             placeholder: "Ex: Aja como um especialista em marketing digital...",
-            suggestions: [],
+            suggestions: [
+              {
+                id: "12",
+                text: "Aja como um Marinheiro experiente em embarcações",
+              },
+            ],
             selectedValue: "",
           },
           {
             id: "objective",
             displayName: "Objetivo (Objective)",
             placeholder: "Ex: Criar 5 slogans para uma nova marca de café...",
-            suggestions: [],
+            suggestions: [
+              {
+                id: "22",
+                text: "Criar um foguete espacial",
+              },
+            ],
             selectedValue: "",
           },
           {
             id: "audience",
             displayName: "Público (Audience)",
             placeholder: "Ex: O público-alvo são jovens de 18 a 25 anos...",
-            suggestions: [],
+            suggestions: [
+              {
+                id: "25",
+                text: "Destinado a entusiastas em física quantica",
+              },
+            ],
             selectedValue: "",
           },
         ]);
@@ -100,7 +115,7 @@ function PromptGenerator() {
         size={"lg"}
         disabled={isLoading}
       >
-        Gere seu prompt
+        Gere o esquema do Prompt
       </Button>
 
       {isLoading ? (
