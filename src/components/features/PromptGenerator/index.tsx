@@ -1,15 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import type { PromptSectionType } from "@/types/prompt";
+import PromptSection from "../PromptSection";
 
-const generateSuggestionsAPI = (prompt: string): Promise<string[]> => {
+const generateSuggestionsAPI = (
+  prompt: string
+): Promise<PromptSectionType[]> => {
   console.log("Enviando para a IA:", prompt);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (Math.random() > 0.2) {
         resolve([
-          `Sugestão baseada em: '${prompt}' - Persona: Um cão surfista.`,
-          "Contexto: Numa entrevista de emprego.",
+          {
+            id: "role",
+            displayName: "Papel (Role)",
+            placeholder: "Ex: Aja como um especialista em marketing digital...",
+            suggestions: [],
+            selectedValue: "",
+          },
+          {
+            id: "objective",
+            displayName: "Objetivo (Objective)",
+            placeholder: "Ex: Criar 5 slogans para uma nova marca de café...",
+            suggestions: [],
+            selectedValue: "",
+          },
+          {
+            id: "audience",
+            displayName: "Público (Audience)",
+            placeholder: "Ex: O público-alvo são jovens de 18 a 25 anos...",
+            suggestions: [],
+            selectedValue: "",
+          },
         ]);
       } else {
         reject(
@@ -23,7 +46,7 @@ const generateSuggestionsAPI = (prompt: string): Promise<string[]> => {
 function PromptGenerator() {
   const [promptIdea, setPromptIdea] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [sections, setSections] = useState<PromptSectionType[]>([]);
   const [isError, setIsError] = useState<string | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -38,11 +61,11 @@ function PromptGenerator() {
 
   const handleGenerate = async () => {
     try {
-      setSuggestions([]);
+      setSections([]);
       setIsError(null);
       setIsLoading(true);
       const data = await generateSuggestionsAPI(promptIdea);
-      setSuggestions(data);
+      setSections(data);
     } catch (e) {
       if (e instanceof Error) {
         setIsError(e.message);
@@ -50,13 +73,16 @@ function PromptGenerator() {
     } finally {
       setIsLoading(false);
     }
+  };
 
-    /*setIsLoading(true);
-    setSuggestions([]);
-    setTimeout(() => {
-      setIsLoading(false);
-      setSuggestions(mockData);
-    }, 2000); */
+  const handleSectionChange = (sectionId: string, newValue: string) => {
+    setSections((currentSections) =>
+      currentSections.map((section) =>
+        section.id === sectionId
+          ? { ...section, selectedValue: newValue }
+          : section
+      )
+    );
   };
 
   return (
@@ -79,10 +105,16 @@ function PromptGenerator() {
 
       {isLoading ? (
         <p>Carregando sugestões...</p>
-      ) : suggestions.length === 0 ? (
+      ) : sections.length === 0 ? (
         <p>Suas sugestões aparecerão aqui.</p>
       ) : (
-        suggestions.map((suggestion) => <li>suggestion: {suggestion} </li>)
+        sections.map((section) => (
+          <PromptSection
+            key={section.id}
+            section={section}
+            onValueChange={handleSectionChange}
+          />
+        ))
       )}
 
       {isError && <p className="text-red-500">Erro: {isError}</p>}
