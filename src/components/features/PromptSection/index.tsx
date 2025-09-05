@@ -35,13 +35,15 @@ function PromptSection(props: PromptSectionProps) {
           aria-expanded={open}
           className="w-[250px] justify-between"
         >
-          {props.section.selectedValue
-            ? props.section.selectedValue
-            : `Selecione o ${props.section.displayName}...`}
+          <span className="truncate">
+            {props.section.selectedValue
+              ? props.section.selectedValue
+              : `Selecione o ${props.section.displayName}...`}
+          </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[500px] p-0">
         <Command>
           <CommandInput
             placeholder={`Não está satisfeito? Escreva o seu ${props.section.displayName}`}
