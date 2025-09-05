@@ -3,6 +3,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import type { PromptSectionType } from "@/types/prompt";
 import PromptSection from "../PromptSection";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 
 const generateSuggestionsAPI = (
   prompt: string
@@ -123,13 +129,19 @@ function PromptGenerator() {
       ) : sections.length === 0 ? (
         <p>Suas sugestões aparecerão aqui.</p>
       ) : (
-        sections.map((section) => (
-          <PromptSection
-            key={section.id}
-            section={section}
-            onValueChange={handleSectionChange}
-          />
-        ))
+        <Accordion type="multiple">
+          {sections.map((section) => (
+            <AccordionItem key={section.id} value={`item-${section.id}`}>
+              <AccordionTrigger>{section.displayName} </AccordionTrigger>
+              <AccordionContent>
+                <PromptSection
+                  section={section}
+                  onValueChange={handleSectionChange}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       )}
 
       {isError && <p className="text-red-500">Erro: {isError}</p>}

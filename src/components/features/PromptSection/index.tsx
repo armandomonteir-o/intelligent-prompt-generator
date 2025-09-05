@@ -1,5 +1,21 @@
+import * as React from "react";
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import type { PromptSectionType } from "@/types/prompt";
-import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type PromptSectionProps = {
   section: PromptSectionType;
@@ -7,16 +23,57 @@ type PromptSectionProps = {
 };
 
 function PromptSection(props: PromptSectionProps) {
-  console.log(props);
+  const [open, setOpen] = React.useState(false);
+  console.log(props.section.selectedValue);
+
   return (
-    <>
-      <h2>{props.section.displayName}</h2>
-      <Textarea
-        placeholder={props.section.placeholder}
-        value={props.section.selectedValue ?? ""}
-        onChange={(e) => props.onValueChange(props.section.id, e.target.value)}
-      ></Textarea>
-    </>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-[250px] justify-between"
+        >
+          {props.section.selectedValue
+            ? props.section.selectedValue
+            : `Selecione o ${props.section.displayName}...`}
+          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput
+            placeholder={`Não está satisfeito? Escreva o seu ${props.section.displayName}`}
+          />
+          <CommandList>
+            <CommandEmpty>`No {props.section.displayName} found`</CommandEmpty>
+            <CommandGroup>
+              {props.section.suggestions.map((suggestion) => (
+                <CommandItem
+                  key={suggestion.id}
+                  value={suggestion.text}
+                  onSelect={(currentValue) => {
+                    props.onValueChange(props.section.id, currentValue);
+                    setOpen(false);
+                  }}
+                >
+                  <CheckIcon
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      props.section.selectedValue === suggestion.text
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                  {suggestion.text}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
 
