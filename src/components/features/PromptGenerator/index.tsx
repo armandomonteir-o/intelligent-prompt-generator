@@ -39,6 +39,10 @@ const generateSuggestionsAPI = (
                 id: "22",
                 text: "Criar um foguete espacial",
               },
+              {
+                id: "23",
+                text: "Criar um navio espacial",
+              },
             ],
             selectedValue: "",
           },
@@ -69,6 +73,7 @@ function PromptGenerator() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [sections, setSections] = useState<PromptSectionType[]>([]);
   const [isError, setIsError] = useState<string | null>(null);
+  const [finalPrompt, setFinalPrompt] = useState<string>("");
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptIdea(event.target.value);
@@ -106,6 +111,24 @@ function PromptGenerator() {
     );
   };
 
+  const handleAssemblePrompt = () => {
+    const isIncomplete = sections.some((section) => !section.selectedValue);
+    if (isIncomplete) {
+      alert("Por favor, preencha todas as seções antes de montar o prompt");
+      return;
+    }
+
+    const allSectionsText = sections.map(
+      (section) => `**${section.displayName}:**\n${section.selectedValue}`
+    );
+
+    const finalString = allSectionsText.join("\n\n");
+    setFinalPrompt(finalString);
+  };
+
+  const isFormComplete =
+    sections.length > 0 && sections.every((section) => section.selectedValue);
+
   return (
     <div>
       <h1>Intelligent Prompt Generator</h1>
@@ -129,7 +152,7 @@ function PromptGenerator() {
       ) : sections.length === 0 ? (
         <p>Suas sugestões aparecerão aqui.</p>
       ) : (
-        <Accordion type="multiple">
+        <Accordion type="multiple" className="w-100">
           {sections.map((section) => (
             <AccordionItem key={section.id} value={`item-${section.id}`}>
               <AccordionTrigger>{section.displayName} </AccordionTrigger>
@@ -143,6 +166,12 @@ function PromptGenerator() {
           ))}
         </Accordion>
       )}
+
+      {isFormComplete && (
+        <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
+      )}
+
+      {finalPrompt != "" && <pre>{finalPrompt}</pre>}
 
       {isError && <p className="text-red-500">Erro: {isError}</p>}
     </div>
