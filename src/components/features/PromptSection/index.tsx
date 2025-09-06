@@ -33,7 +33,7 @@ function PromptSection(props: PromptSectionProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[250px] justify-between"
+          className=" w-full justify-between text-foreground"
         >
           <span className="truncate">
             {props.section.selectedValue
@@ -43,7 +43,7 @@ function PromptSection(props: PromptSectionProps) {
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[500px] p-0">
+      <PopoverContent align="start" className="w-full p-0">
         <Command>
           <CommandInput
             placeholder={`Não está satisfeito? Escreva o seu ${props.section.displayName}`}

@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { CopyIcon, CheckIcon } from "lucide-react";
 
 const generateSuggestionsAPI = (
   prompt: string
@@ -99,6 +100,7 @@ function PromptGenerator() {
   const [sections, setSections] = useState<PromptSectionType[]>([]);
   const [isError, setIsError] = useState<string | null>(null);
   const [finalPrompt, setFinalPrompt] = useState<string>("");
+  const [isCopied, setIsCopied] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptIdea(event.target.value);
@@ -154,6 +156,13 @@ function PromptGenerator() {
   const isFormComplete =
     sections.length > 0 && sections.every((section) => section.selectedValue);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(finalPrompt).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    });
+  };
+
   return (
     <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg space-y-6 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-center ">
@@ -179,10 +188,12 @@ function PromptGenerator() {
       ) : sections.length === 0 ? (
         <p>Suas sugestões aparecerão aqui.</p>
       ) : (
-        <Accordion type="multiple" className="w-100">
+        <Accordion type="multiple" className="w-max p-2">
           {sections.map((section) => (
             <AccordionItem key={section.id} value={`item-${section.id}`}>
-              <AccordionTrigger>{section.displayName} </AccordionTrigger>
+              <AccordionTrigger className="text-md font-semibold">
+                <h2>{section.displayName} </h2>
+              </AccordionTrigger>
               <AccordionContent>
                 <PromptSection
                   section={section}
@@ -195,12 +206,26 @@ function PromptGenerator() {
       )}
 
       {isFormComplete && (
-        <Button className="" onClick={handleAssemblePrompt}>
-          Montar Prompt Final
-        </Button>
+        <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
       )}
 
-      {finalPrompt != "" && <pre>{finalPrompt}</pre>}
+      {finalPrompt != "" && (
+        <div className="relative bg-slate-200 rounded-md border p-10">
+          <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>{" "}
+          <Button
+            onClick={handleCopy}
+            variant={"default"}
+            className="mt-2"
+            size={"icon"}
+          >
+            {isCopied ? (
+              <CheckIcon className="size-4" />
+            ) : (
+              <CopyIcon className="size-4"></CopyIcon>
+            )}
+          </Button>
+        </div>
+      )}
 
       {isError && <p className="text-red-500">Erro: {isError}</p>}
     </div>
