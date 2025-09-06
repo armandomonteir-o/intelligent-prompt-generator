@@ -58,6 +58,31 @@ const generateSuggestionsAPI = (
             ],
             selectedValue: "",
           },
+          {
+            id: "style",
+            displayName: "Estilo (Style)",
+            placeholder:
+              "Ex: A resposta deve ser em formato cômico, abraçando o tom humorístico e o conectando com conceitos filosóficos",
+            suggestions: [
+              {
+                id: "25",
+                text: "A resposta deve ser em tom formal e corporativo",
+              },
+            ],
+            selectedValue: "",
+          },
+          {
+            id: "outputFormat",
+            displayName: "Formato de Resposta (Output Format)",
+            placeholder: "Ex: A resposta deve vir em formato JSON",
+            suggestions: [
+              {
+                id: "25",
+                text: "Retorne em formato de tópicos",
+              },
+            ],
+            selectedValue: "",
+          },
         ]);
       } else {
         reject(
@@ -130,8 +155,10 @@ function PromptGenerator() {
     sections.length > 0 && sections.every((section) => section.selectedValue);
 
   return (
-    <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg">
-      <h1 className="text-3xl font-bold">Intelligent Prompt Generator</h1>
+    <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg space-y-6 flex flex-col items-center">
+      <h1 className="text-3xl font-bold text-center ">
+        Intelligent Prompt Generator
+      </h1>
       <Textarea
         value={promptIdea}
         placeholder="Escreva a sua ideia"
