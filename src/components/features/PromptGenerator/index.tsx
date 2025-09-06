@@ -130,8 +130,8 @@ function PromptGenerator() {
     sections.length > 0 && sections.every((section) => section.selectedValue);
 
   return (
-    <div>
-      <h1>Intelligent Prompt Generator</h1>
+    <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg">
+      <h1 className="text-3xl font-bold">Intelligent Prompt Generator</h1>
       <Textarea
         value={promptIdea}
         placeholder="Escreva a sua ideia"
@@ -168,7 +168,9 @@ function PromptGenerator() {
       )}
 
       {isFormComplete && (
-        <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
+        <Button className="" onClick={handleAssemblePrompt}>
+          Montar Prompt Final
+        </Button>
       )}
 
       {finalPrompt != "" && <pre>{finalPrompt}</pre>}
