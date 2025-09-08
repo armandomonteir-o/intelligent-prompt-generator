@@ -210,7 +210,7 @@ function PromptGenerator() {
       )}
 
       {finalPrompt != "" && (
-        <div className=" bg-slate-200 border rounded-md p-8">
+        <div className=" bg-slate-200 dark:bg-slate-800 border rounded-md p-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground"> Seu Prompt Final</h3>
             <Button onClick={handleCopy} variant={"default"} size={"icon"}>
