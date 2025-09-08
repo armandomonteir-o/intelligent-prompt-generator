@@ -210,20 +210,19 @@ function PromptGenerator() {
       )}
 
       {finalPrompt != "" && (
-        <div className="relative bg-slate-200 rounded-md border p-10">
-          <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>{" "}
-          <Button
-            onClick={handleCopy}
-            variant={"default"}
-            className="mt-2"
-            size={"icon"}
-          >
-            {isCopied ? (
-              <CheckIcon className="size-4" />
-            ) : (
-              <CopyIcon className="size-4"></CopyIcon>
-            )}
-          </Button>
+        <div className=" bg-slate-200 border rounded-md p-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-foreground"> Seu Prompt Final</h3>
+            <Button onClick={handleCopy} variant={"default"} size={"icon"}>
+              {isCopied ? (
+                <CheckIcon className="size-4" />
+              ) : (
+                <CopyIcon className="size-4"></CopyIcon>
+              )}
+            </Button>
+          </div>
+
+          <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>
         </div>
       )}
 
