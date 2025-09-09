@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { CopyIcon, CheckIcon } from "lucide-react";
+import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
 
 const generateSuggestionsAPI = (
   prompt: string
@@ -115,6 +115,7 @@ function PromptGenerator() {
   const handleGenerate = async () => {
     try {
       setSections([]);
+      setFinalPrompt("");
       setIsError(null);
       setIsLoading(true);
       const data = await generateSuggestionsAPI(promptIdea);
@@ -179,8 +180,15 @@ function PromptGenerator() {
         variant={"outline"}
         size={"lg"}
         disabled={isLoading}
+        className="min-w-[220px]"
       >
-        Gere o esquema do Prompt
+        {isLoading ? (
+          <>
+            <Loader2 className=" size-4 animate-spin" />
+          </>
+        ) : (
+          <span>Gere o esquema do Prompt</span>
+        )}
       </Button>
 
       {isLoading ? (
