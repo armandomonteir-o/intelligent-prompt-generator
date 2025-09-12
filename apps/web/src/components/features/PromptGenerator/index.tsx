@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import type { PromptSectionType } from "@/types/prompt";
 import PromptSection from "../PromptSection";
+import type { PromptSectionType } from "@/types/prompt";
 import { toast } from "sonner";
 import {
   Accordion,
