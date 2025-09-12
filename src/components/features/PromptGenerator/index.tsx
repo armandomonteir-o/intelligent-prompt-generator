@@ -3,6 +3,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import type { PromptSectionType } from "@/types/prompt";
 import PromptSection from "../PromptSection";
+import { toast } from "sonner";
 import {
   Accordion,
   AccordionItem,
@@ -142,7 +143,9 @@ function PromptGenerator() {
   const handleAssemblePrompt = () => {
     const isIncomplete = sections.some((section) => !section.selectedValue);
     if (isIncomplete) {
-      alert("Por favor, preencha todas as seções antes de montar o prompt");
+      toast.error(
+        "Por favor, preencha todas as seções antes de montar o prompt"
+      );
       return;
     }
 
@@ -159,6 +162,7 @@ function PromptGenerator() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(finalPrompt).then(() => {
+      toast.success("Prompt copiado para a área de transferência!");
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });
