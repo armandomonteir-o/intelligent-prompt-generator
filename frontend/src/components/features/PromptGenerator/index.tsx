@@ -12,10 +12,26 @@ import {
 } from "@/components/ui/accordion";
 import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
 
-const generateSuggestionsAPI = (
+const generateSuggestionsAPI = async (
   prompt: string
 ): Promise<PromptSectionType[]> => {
-  console.log("Enviando para a IA:", prompt);
+  console.log("Enviando para a o backend:", prompt);
+
+  const response = await fetch("http://localhost:3005/api", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ promptIdea: prompt }),
+  });
+
+  if (!response.ok) {
+    throw new Error();
+  }
+
+  const backendResponse = await response.json();
+  console.log("resposta do backend:", backendResponse);
+
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (Math.random() > 0.2) {
