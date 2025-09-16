@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { mockSuggestions } from "./mocks/suggestionsMock";
-import { mockMarketing } from "./mocks/marketingMock";
+import { SuggestionsGenerator } from "./services/SuggestionGenerator";
 
 const app = express();
 const port = 3005;
@@ -11,16 +10,8 @@ app.use(express.json());
 
 app.post("/api", (req, res) => {
   const { promptIdea } = req.body;
-  const textoPrincipal: string = promptIdea;
-  const palavraChave = "marketing";
-
-  if (textoPrincipal.toLowerCase().includes(palavraChave)) {
-    console.log("servindo o mock de marketing");
-    res.status(200).json(mockMarketing);
-  } else {
-    console.log("servindo o mock padrão.");
-    res.status(200).json(mockSuggestions);
-  }
+  const suggestions = SuggestionsGenerator.generate(promptIdea);
+  res.status(200).json(suggestions);
 });
 
 app.listen(port, () => {
