@@ -8,11 +8,31 @@ const port = 3005;
 app.use(cors());
 app.use(express.json());
 
-app.post("/api", (req, res) => {
-  const { promptIdea } = req.body;
-  const suggestions = SuggestionsGenerator.generate(promptIdea);
-  res.status(200).json(suggestions);
+app.post("/api", async (req, res) => {
+  console.log("--- Endpoint /api foi chamado! ---");
+  try {
+    const { promptIdea } = req.body;
+
+    const suggestions = await SuggestionsGenerator.generate(promptIdea);
+    res.status(200).json(suggestions);
+  } catch (error) {
+    console.error("Erro no endpoint /api", error);
+    res.status(500).json({ message: "erro interno no servidor" });
+  }
 });
+
+/*teste
+app.post("/api", async (req, res) => {
+  console.log("--- Endpoint /api foi chamado! ---");
+  try {
+    // const { promptIdea } = req.body;
+    // const suggestions = await SuggestionsGenerator.generate(promptIdea);
+    res.status(200).json([{ id: "test", displayName: "Teste Funcionou" }]); // <--- APENAS ISSO
+  } catch (error) {
+    console.error("Erro no endpoint /api", error);
+    res.status(500).json({ message: "erro interno no servidor" });
+  }
+}); */
 
 app.listen(port, () => {
   console.log(`[backend]: listening in localhost:${port}`);

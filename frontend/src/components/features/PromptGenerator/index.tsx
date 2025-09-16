@@ -16,30 +16,51 @@ import { mockMarketing } from "@/mocks/marketingMock";
 const generateSuggestionsAPI = async (
   prompt: string
 ): Promise<PromptSectionType[]> => {
+  console.log("[API] - 1. A função generateSuggestionsAPI foi chamada.");
   if (import.meta.env.VITE_MOCK_API === "true") {
+    console.warn("[API] - 2. MODO MOCK DETECTADO. Entrando no bloco 'if'.");
+    console.log("[API] - 3. O mock que será retornado é:", mockMarketing);
     console.warn("API está em modo MOCK");
     return new Promise((resolve) =>
       setTimeout(() => resolve(mockMarketing), 1000)
     );
   }
 
+  console.log(
+    "[FETCH] 1. Iniciando a chamada fetch para http://localhost:3005/api"
+  );
   console.log("Enviando para a o backend:", prompt);
-  const response = await fetch("http://localhost:3005/api", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ promptIdea: prompt }),
-  });
 
-  if (!response.ok) {
-    throw new Error("O servidor respondeu com um erro. Tente novamente.");
+  try {
+    const response = await fetch("http://localhost:3005/api", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ promptIdea: prompt }),
+    });
+
+    console.log(
+      "[FETCH] 2. Recebemos uma resposta! Objeto Response:",
+      response
+    );
+    console.log(`[FETCH] 3. Status da resposta: ${response.status}`);
+    console.log(`[FETCH] 4. Resposta OK?: ${response.ok}`);
+
+    if (!response.ok) {
+      console.error("[FETCH] 5. A resposta não foi OK. Lançando erro.");
+      throw new Error("O servidor respondeu com um erro. Tente novamente.");
+    }
+
+    console.log("[FETCH] 6. A resposta foi OK. Tentando extrair o JSON...");
+    const backendResponse: PromptSectionType[] = await response.json();
+    console.log("resposta do backend:", backendResponse);
+
+    return backendResponse;
+  } catch (error) {
+    console.error("[FETCH] X. CAIU NO CATCH! A chamada de rede falhou.", error);
+    throw error;
   }
-
-  const backendResponse: PromptSectionType[] = await response.json();
-  console.log("resposta do backend:", backendResponse);
-
-  return backendResponse;
 };
 
 function PromptGenerator() {
@@ -53,12 +74,6 @@ function PromptGenerator() {
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptIdea(event.target.value);
   };
-
-  /*const mockData = [
-    "Persona: Um pirata filosófico",
-    "Contexto: Numa reunião de RH",
-    "Tarefa: Escrever um email passivo-agressivo",
-  ];*/
 
   const handleGenerate = async () => {
     try {
