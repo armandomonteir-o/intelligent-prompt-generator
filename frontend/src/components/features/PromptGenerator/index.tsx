@@ -11,12 +11,19 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
+import { mockMarketing } from "@/mocks/marketingMock";
 
 const generateSuggestionsAPI = async (
   prompt: string
 ): Promise<PromptSectionType[]> => {
-  console.log("Enviando para a o backend:", prompt);
+  if (import.meta.env.VITE_MOCK_API === "true") {
+    console.warn("API está em modo MOCK");
+    return new Promise((resolve) =>
+      setTimeout(() => resolve(mockMarketing), 1000)
+    );
+  }
 
+  console.log("Enviando para a o backend:", prompt);
   const response = await fetch("http://localhost:3005/api", {
     method: "POST",
     headers: {
