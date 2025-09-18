@@ -13,6 +13,7 @@ import {
 import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
 import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
 import { INITIAL_SECTIONS } from "@/data/promptStructure";
+import { assemblePromptString } from "@/lib/promptUtils";
 
 const generateSuggestionsAPI = async (
   prompt: string
@@ -121,19 +122,15 @@ function PromptGenerator() {
   };
 
   const handleAssemblePrompt = () => {
-    const isIncomplete = sections.some((section) => !section.selectedValue);
-    if (isIncomplete) {
+    const finalString = assemblePromptString(sections);
+
+    if (!finalString) {
       toast.error(
         "Por favor, preencha todas as seções antes de montar o prompt"
       );
       return;
     }
 
-    const allSectionsText = sections.map(
-      (section) => `**${section.displayName}:**\n${section.selectedValue}`
-    );
-
-    const finalString = allSectionsText.join("\n\n");
     setFinalPrompt(finalString);
   };
 
