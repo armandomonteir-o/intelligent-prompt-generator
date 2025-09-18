@@ -1,13 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
-import { promptResponseSchema } from "../types/prompt.schema";
+import {
+  promptResponseSchema,
+  suggestionsSchema,
+} from "../types/prompt.schema";
 import type { PromptSectionType } from "../types/prompt.schema";
-
+import type { SuggestionsType } from "../types/prompt.schema";
 const API_KEY = process.env.GEMINI_API_KEY;
 
 export class SuggestionsGenerator {
-  public static async generate(
-    promptIdea: string
-  ): Promise<PromptSectionType[]> {
+  public static async generate(promptIdea: string): Promise<SuggestionsType> {
     if (!API_KEY) {
       throw new Error("Chave de API não encontrada");
     }
@@ -16,83 +17,88 @@ export class SuggestionsGenerator {
 
     const promptParaIA = `
 // 1. ROLE PROMPTING
-You are an expert creative assistant specializing in prompt engineering. Your primary function is to take a user's simple prompt idea and expand it into a detailed, structured JSON object.
+You are an expert creative assistant specializing in prompt engineering. Your primary function is to take a user's simple prompt idea and generate a JSON object containing creative suggestions based on it.
 
 // 2. SYSTEM & CONTEXTUAL PROMPTING (INSTRUCTION-FOCUSED)
-Your task is to generate 3 creative and distinct suggestions for each of the 5 required sections: "role", "objective", "audience", "style", and "outputFormat".
-
-Your entire response will be a single, valid JSON array that starts with '[' and ends with ']'. Adhere strictly to the schema and format demonstrated in the examples below.
+Your task is to generate exactly 3 creative and distinct suggestions for each of the 5 required keys: "role", "objective", "audience", "style", and "outputFormat".
+Your entire response must be a single, valid JSON object that starts with '{' and ends with '}'. Adhere strictly to the schema and format demonstrated in the examples below.
 
 // 3. FEW-SHOT PROMPTING (EXAMPLES)
 
 ---
 EXAMPLE 1
-USER INPUT: "a prompt to create a new brand design"
+USER INPUT: "a prompt to create a new brand design for a sustainable coffee shop"
 EXPECTED JSON OUTPUT:
-[
-  {
-    "id": "role",
-    "displayName": "Role",
-    "placeholder": "e.g., Act as a senior brand strategist...",
-    "suggestions": [
-      {"id": "brand-role-1", "text": "Act as a lead graphic designer specializing in minimalist logos."},
-      {"id": "brand-role-2", "text": "Embody a marketing director for a disruptive tech startup."},
-      {"id": "brand-role-3", "text": "Assume the persona of a brand consultant for sustainable companies."}
-    ],
-    "selectedValue": null
-  },
-  {
-    "id": "objective",
-    "displayName": "Objective",
-    "placeholder": "e.g., Develop a complete visual identity...",
-    "suggestions": [
-      {"id": "brand-obj-1", "text": "Generate 5 taglines and a mission statement for the brand."},
-      {"id": "brand-obj-2", "text": "Create a color palette and font pairing for the visual identity."},
-      {"id": "brand-obj-3", "text": "Design three different logo concepts for a new coffee shop."}
-    ],
-    "selectedValue": null
-  }
-]
+{
+  "role": [
+    "Act as a lead graphic designer specializing in eco-friendly and minimalist branding.",
+    "Embody a marketing director for a disruptive, ethically-sourced coffee startup.",
+    "Assume the persona of a brand consultant who helps sustainable companies tell their story."
+  ],
+  "objective": [
+    "Generate 5 taglines and a mission statement for the brand.",
+    "Create a primary color palette and a secondary font pairing for the visual identity.",
+    "Design three distinct logo concepts that emphasize nature and sustainability."
+  ],
+  "audience": [
+    "Target environmentally conscious millennials aged 25-40.",
+    "Focus on local community members who value small, ethical businesses.",
+    "Appeal to remote workers looking for a high-quality 'third space'."
+  ],
+  "style": [
+    "The brand voice should be warm, authentic, and community-focused.",
+    "Use a clean, modern, and slightly rustic aesthetic.",
+    "Communicate with transparency and a passion for ethical sourcing."
+  ],
+  "outputFormat": [
+    "A one-page brand guidelines document in Markdown.",
+    "A JSON object containing the color palette (hex codes), font names, and taglines.",
+    "A list of 10 social media post ideas to launch the new brand."
+  ]
+}
 ---
 
 ---
 EXAMPLE 2
-USER INPUT: "a prompt to explain a code concept"
+USER INPUT: "a prompt to explain recursion to a beginner programmer"
 EXPECTED JSON OUTPUT:
-[
-  {
-    "id": "role",
-    "displayName": "Role",
-    "placeholder": "e.g., Act as a senior software engineer...",
-    "suggestions": [
-      {"id": "code-role-1", "text": "Act as a computer science professor teaching a beginner."},
-      {"id": "code-role-2", "text": "Assume the role of a tech blogger explaining a concept with analogies."},
-      {"id": "code-role-3", "text": "Embody a developer mentor conducting a code review."}
-    ],
-    "selectedValue": null
-  },
-  {
-    "id": "objective",
-    "displayName": "Objective",
-    "placeholder": "e.g., Explain the concept of 'async/await'...",
-    "suggestions": [
-      {"id": "code-obj-1", "text": "Explain the difference between 'let', 'const', and 'var' in JavaScript."},
-      {"id": "code-obj-2", "text": "Describe the concept of recursion using a real-world analogy."},
-      {"id": "code-obj-3", "text": "Create a simple code example to demonstrate polymorphism in TypeScript."}
-    ],
-    "selectedValue": null
-  }
-]
+{
+  "role": [
+    "Act as a computer science professor known for using great analogies.",
+    "Assume the role of a senior developer mentoring a junior colleague.",
+    "Embody a tech blogger who simplifies complex topics for a wide audience."
+  ],
+  "objective": [
+    "Explain the concept of a 'base case' in recursion.",
+    "Write a simple JavaScript function that demonstrates recursion by calculating a factorial.",
+    "Describe a common pitfall of recursion, like infinite loops or stack overflow."
+  ],
+  "audience": [
+    "A student in their first programming course.",
+    "A self-taught developer transitioning from another career.",
+    "Someone who understands basic loops (like 'for' and 'while') but is new to recursion."
+  ],
+  "style": [
+    "Use a friendly, encouraging, and patient tone.",
+    "Rely on a clear, real-world analogy (like Russian nesting dolls or a hall of mirrors).",
+    "Avoid overly technical jargon where possible."
+  ],
+  "outputFormat": [
+    "A series of numbered steps explaining the concept.",
+    "A combination of a short explanation followed by a commented code block.",
+    "A Q&A format with common questions a beginner might have."
+  ]
+}
 ---
 
 // THE REAL TASK
-Now, perform the same function for the following user input. Remember, your response must be only the JSON array.
+Now, perform the same function for the following user input. Remember, your response must be only the JSON object.
 
 USER INPUT:
 "${promptIdea}"
 `;
     const response = await genAI.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.0-flash",
       contents: promptParaIA,
     });
 
@@ -105,8 +111,7 @@ USER INPUT:
     try {
       const cleanText = text.replace("```json", "").replace("```", "").trim();
       const jsonData = JSON.parse(cleanText);
-      const suggestions: PromptSectionType[] =
-        promptResponseSchema.parse(jsonData);
+      const suggestions: SuggestionsType = suggestionsSchema.parse(jsonData);
       console.log("JSON parseado e validado com sucesso!");
       console.log(suggestions);
       return suggestions;

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import type { PromptSectionType } from "@/types/prompt.schema";
+import type { PromptSectionType, SuggestionsType } from "@/types/prompt.schema";
 import PromptSection from "../PromptSection";
 import { toast } from "sonner";
 import {
@@ -11,18 +11,19 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
-import { mockMarketing } from "@/mocks/marketingMock";
+import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
+import { INITIAL_SECTIONS } from "@/data/promptStructure";
 
 const generateSuggestionsAPI = async (
   prompt: string
-): Promise<PromptSectionType[]> => {
+): Promise<SuggestionsType> => {
   console.log("[API] - 1. A função generateSuggestionsAPI foi chamada.");
   if (import.meta.env.VITE_MOCK_API === "true") {
     console.warn("[API] - 2. MODO MOCK DETECTADO. Entrando no bloco 'if'.");
-    console.log("[API] - 3. O mock que será retornado é:", mockMarketing);
+    console.log("[API] - 3. O mock que será retornado é:", marketingMockV2);
     console.warn("API está em modo MOCK");
     return new Promise((resolve) =>
-      setTimeout(() => resolve(mockMarketing), 1000)
+      setTimeout(() => resolve(marketingMockV2), 2000)
     );
   }
 
@@ -53,7 +54,7 @@ const generateSuggestionsAPI = async (
     }
 
     console.log("[FETCH] 6. A resposta foi OK. Tentando extrair o JSON...");
-    const backendResponse: PromptSectionType[] = await response.json();
+    const backendResponse: SuggestionsType = await response.json();
     console.log("resposta do backend:", backendResponse);
 
     return backendResponse;
@@ -66,7 +67,8 @@ const generateSuggestionsAPI = async (
 function PromptGenerator() {
   const [promptIdea, setPromptIdea] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [sections, setSections] = useState<PromptSectionType[]>([]);
+  const [sections, setSections] =
+    useState<PromptSectionType[]>(INITIAL_SECTIONS);
   const [isError, setIsError] = useState<string | null>(null);
   const [finalPrompt, setFinalPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
@@ -77,12 +79,28 @@ function PromptGenerator() {
 
   const handleGenerate = async () => {
     try {
-      setSections([]);
+      setSections(INITIAL_SECTIONS);
       setFinalPrompt("");
       setIsError(null);
       setIsLoading(true);
-      const data = await generateSuggestionsAPI(promptIdea);
-      setSections(data);
+
+      const suggestionsFromAPI: SuggestionsType = await generateSuggestionsAPI(
+        promptIdea
+      );
+
+      const updatedSections = INITIAL_SECTIONS.map((section) => {
+        const newSuggestions = suggestionsFromAPI[section.id];
+
+        return {
+          ...section,
+          suggestions: newSuggestions.map((text, index) => ({
+            id: `${section.id}-${index}`,
+            text,
+          })),
+        };
+      });
+
+      setSections(updatedSections);
     } catch (e) {
       if (e instanceof Error) {
         setIsError(e.message);

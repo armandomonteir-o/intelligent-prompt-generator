@@ -1,10 +1,10 @@
 import type { PromptSectionType } from "@/types/prompt.schema";
 
+// legacy content; that mock was used in the v1 returning data
 export const mockMarketing: PromptSectionType[] = [
   {
     id: "role",
     displayName: "Papel (Role)",
-    placeholder: "Ex: Aja como um especialista em growth hacking...",
     suggestions: [
       {
         id: "mkt-role-1",
@@ -24,8 +24,6 @@ export const mockMarketing: PromptSectionType[] = [
   {
     id: "objective",
     displayName: "Objetivo (Objective)",
-    placeholder:
-      "Ex: Criar uma campanha de lançamento para um novo produto de skincare...",
     suggestions: [
       {
         id: "mkt-obj-1",
@@ -45,8 +43,6 @@ export const mockMarketing: PromptSectionType[] = [
   {
     id: "audience",
     displayName: "Público (Audience)",
-    placeholder:
-      "Ex: O público-alvo são startups de tecnologia em estágio inicial...",
     suggestions: [
       {
         id: "mkt-aud-1",
@@ -62,8 +58,6 @@ export const mockMarketing: PromptSectionType[] = [
   {
     id: "style",
     displayName: "Estilo (Style)",
-    placeholder:
-      "Ex: O tom de voz deve ser informativo, mas com um toque de humor...",
     suggestions: [
       {
         id: "mkt-sty-1",
@@ -79,8 +73,6 @@ export const mockMarketing: PromptSectionType[] = [
   {
     id: "outputFormat",
     displayName: "Formato de Resposta (Output Format)",
-    placeholder:
-      "Ex: A resposta deve ser uma tabela com colunas para 'Ideia' e 'Canal'...",
     suggestions: [
       {
         id: "mkt-out-1",
