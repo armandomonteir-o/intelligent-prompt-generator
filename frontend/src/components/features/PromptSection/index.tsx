@@ -1,11 +1,10 @@
-import * as React from "react";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import * as react from "react";
+import { CheckIcon, ChevronsUpDownIcon, PlusCircleIcon } from "lucide-react";
 import type { PromptSectionType } from "@/types/prompt.schema";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -23,8 +22,23 @@ type PromptSectionProps = {
 };
 
 function PromptSection(props: PromptSectionProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = react.useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = react.useState<string>("");
   console.log(props.section.selectedValue);
+
+  const handleSelect = (currentValue: string) => {
+    props.onValueChange(props.section.id, currentValue);
+    setOpen(false);
+  };
+
+  const hasExistingSuggestion = react.useMemo(() => {
+    if (!searchQuery) return true;
+    return props.section.suggestions.some(
+      (suggestion) =>
+        suggestion.text.trim().toLowerCase() ===
+        searchQuery.trim().toLowerCase()
+    );
+  }, [searchQuery, props.section.suggestions]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,21 +58,38 @@ function PromptSection(props: PromptSectionProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-full p-0 max-w-80">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
+            onValueChange={setSearchQuery}
             placeholder={`Não está satisfeito? Escreva o seu ${props.section.displayName}`}
           />
           <CommandList>
-            <CommandEmpty>`No {props.section.displayName} found`</CommandEmpty>
             <CommandGroup>
+              <CommandItem
+                key={"create-new"}
+                value={searchQuery}
+                onSelect={handleSelect}
+                className={
+                  !searchQuery || hasExistingSuggestion
+                    ? "hidden"
+                    : "flex items-center"
+                }
+              >
+                {props.section.selectedValue === searchQuery ? (
+                  <CheckIcon className="mr-2 h-4 w-4" />
+                ) : (
+                  <PlusCircleIcon className="mr-2 h-4 w-4" />
+                )}
+
+                {props.section.selectedValue === searchQuery
+                  ? searchQuery
+                  : `Criar: "${searchQuery}"`}
+              </CommandItem>
               {props.section.suggestions.map((suggestion) => (
                 <CommandItem
                   key={suggestion.id}
                   value={suggestion.text}
-                  onSelect={(currentValue) => {
-                    props.onValueChange(props.section.id, currentValue);
-                    setOpen(false);
-                  }}
+                  onSelect={handleSelect}
                 >
                   <CheckIcon
                     className={cn(
