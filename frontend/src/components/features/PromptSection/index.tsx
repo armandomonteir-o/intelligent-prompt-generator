@@ -15,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { capitalizeFirstLetter } from "@/lib/promptUtils";
 
 type PromptSectionProps = {
   section: PromptSectionType;
@@ -51,7 +52,7 @@ function PromptSection(props: PromptSectionProps) {
         >
           <span className="truncate">
             {props.section.selectedValue
-              ? props.section.selectedValue
+              ? capitalizeFirstLetter(props.section.selectedValue)
               : `Selecione o ${props.section.displayName}...`}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -82,8 +83,8 @@ function PromptSection(props: PromptSectionProps) {
                 )}
 
                 {props.section.selectedValue === searchQuery
-                  ? searchQuery
-                  : `Criar: "${searchQuery}"`}
+                  ? capitalizeFirstLetter(searchQuery)
+                  : `Criar: "${capitalizeFirstLetter(searchQuery)}"`}
               </CommandItem>
               {props.section.suggestions.map((suggestion) => (
                 <CommandItem
@@ -99,7 +100,7 @@ function PromptSection(props: PromptSectionProps) {
                         : "opacity-0"
                     )}
                   />
-                  {suggestion.text}
+                  {capitalizeFirstLetter(suggestion.text)}
                 </CommandItem>
               ))}
             </CommandGroup>
