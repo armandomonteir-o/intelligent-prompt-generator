@@ -118,3 +118,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.toaster [data-sonner-toast] [data-close-button] {
+  left: unset !important;
+  right: -15px !important;
+}
+.toaster [data-sonner-toast] [data-close-button]:hover svg {
+  stroke: var(--primary-foreground);
+}
