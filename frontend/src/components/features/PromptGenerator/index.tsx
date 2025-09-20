@@ -78,6 +78,10 @@ function PromptGenerator() {
     setPromptIdea(event.target.value);
   };
 
+  const hasSuggestions = sections.some(
+    (section) => section.suggestions.length > 0
+  );
+
   const handleGenerate = async () => {
     try {
       setSections(INITIAL_SECTIONS);
@@ -139,7 +143,9 @@ function PromptGenerator() {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(finalPrompt).then(() => {
-      toast.success("Prompt copiado para a área de transferência!");
+      toast.success("Prompt copiado para a área de transferência!", {
+        className: "opacity-50",
+      });
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     });
@@ -174,8 +180,11 @@ function PromptGenerator() {
 
       {isLoading ? (
         <p>Carregando sugestões...</p>
-      ) : sections.length === 0 ? (
-        <p>Suas sugestões aparecerão aqui.</p>
+      ) : !hasSuggestions ? (
+        <p className="text-muted-foreground  mt-2 text-center opacity-75 italic">
+          Digite uma ideia no campo acima e clique em "Gerar" para que a IA
+          construa seu esquema de prompt.
+        </p>
       ) : (
         <Accordion type="multiple" className="w-max p-2">
           {sections.map((section) => (
