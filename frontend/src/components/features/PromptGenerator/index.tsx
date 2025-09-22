@@ -14,6 +14,7 @@ import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
 import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
 import { INITIAL_SECTIONS } from "@/data/promptStructure";
 import { assemblePromptString } from "@/lib/promptUtils";
+import { HelpInfoSheet } from "../HelpInfoSheet";
 
 const generateSuggestionsAPI = async (
   prompt: string
@@ -152,80 +153,86 @@ function PromptGenerator() {
   };
 
   return (
-    <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg space-y-6 flex flex-col items-center">
-      <h1 className="text-3xl font-bold text-center ">
-        Intelligent Prompt Generator
-      </h1>
-      <Textarea
-        value={promptIdea}
-        placeholder="Escreva a sua ideia"
-        onChange={handleChange}
-        disabled={isLoading}
-      ></Textarea>
-      <Button
-        onClick={handleGenerate}
-        variant={"outline"}
-        size={"lg"}
-        disabled={isLoading}
-        className="min-w-[220px]"
-      >
+    <>
+      <HelpInfoSheet></HelpInfoSheet>
+      <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg space-y-6 flex flex-col items-center">
+        <h1 className="text-3xl font-bold text-center ">
+          Intelligent Prompt Generator
+        </h1>
+        <Textarea
+          value={promptIdea}
+          placeholder="Escreva a sua ideia"
+          onChange={handleChange}
+          disabled={isLoading}
+        ></Textarea>
+        <Button
+          onClick={handleGenerate}
+          variant={"outline"}
+          size={"lg"}
+          disabled={isLoading}
+          className="min-w-[220px]"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className=" size-4 animate-spin" />
+            </>
+          ) : (
+            <span>Gere o esquema do Prompt</span>
+          )}
+        </Button>
+
         {isLoading ? (
-          <>
-            <Loader2 className=" size-4 animate-spin" />
-          </>
+          <p>Carregando sugestões...</p>
+        ) : !hasSuggestions ? (
+          <p className="text-muted-foreground  mt-2 text-center opacity-75 italic">
+            Digite uma ideia no campo acima e clique em "Gerar" para que a IA
+            construa seu esquema de prompt.
+          </p>
         ) : (
-          <span>Gere o esquema do Prompt</span>
+          <Accordion type="multiple" className="w-max p-2">
+            {sections.map((section) => (
+              <AccordionItem key={section.id} value={`item-${section.id}`}>
+                <AccordionTrigger className="text-md font-semibold">
+                  <h2>{section.displayName} </h2>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <PromptSection
+                    section={section}
+                    onValueChange={handleSectionChange}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         )}
-      </Button>
 
-      {isLoading ? (
-        <p>Carregando sugestões...</p>
-      ) : !hasSuggestions ? (
-        <p className="text-muted-foreground  mt-2 text-center opacity-75 italic">
-          Digite uma ideia no campo acima e clique em "Gerar" para que a IA
-          construa seu esquema de prompt.
-        </p>
-      ) : (
-        <Accordion type="multiple" className="w-max p-2">
-          {sections.map((section) => (
-            <AccordionItem key={section.id} value={`item-${section.id}`}>
-              <AccordionTrigger className="text-md font-semibold">
-                <h2>{section.displayName} </h2>
-              </AccordionTrigger>
-              <AccordionContent>
-                <PromptSection
-                  section={section}
-                  onValueChange={handleSectionChange}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      )}
+        {isFormComplete && (
+          <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
+        )}
 
-      {isFormComplete && (
-        <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
-      )}
+        {finalPrompt != "" && (
+          <div className=" bg-slate-200 dark:bg-slate-800 border rounded-md p-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-foreground">
+                {" "}
+                Seu Prompt Final
+              </h3>
+              <Button onClick={handleCopy} variant={"default"} size={"icon"}>
+                {isCopied ? (
+                  <CheckIcon className="size-4" />
+                ) : (
+                  <CopyIcon className="size-4"></CopyIcon>
+                )}
+              </Button>
+            </div>
 
-      {finalPrompt != "" && (
-        <div className=" bg-slate-200 dark:bg-slate-800 border rounded-md p-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-foreground"> Seu Prompt Final</h3>
-            <Button onClick={handleCopy} variant={"default"} size={"icon"}>
-              {isCopied ? (
-                <CheckIcon className="size-4" />
-              ) : (
-                <CopyIcon className="size-4"></CopyIcon>
-              )}
-            </Button>
+            <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>
           </div>
+        )}
 
-          <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>
-        </div>
-      )}
-
-      {isError && <p className="text-red-500">Erro: {isError}</p>}
-    </div>
+        {isError && <p className="text-red-500">Erro: {isError}</p>}
+      </div>
+    </>
   );
 }
 
