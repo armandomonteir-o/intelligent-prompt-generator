@@ -21,17 +21,12 @@ const generateSuggestionsAPI = async (
 ): Promise<SuggestionsType> => {
   console.log("[API] - 1. A função generateSuggestionsAPI foi chamada.");
   if (import.meta.env.VITE_MOCK_API === "true") {
-    console.warn("[API] - 2. MODO MOCK DETECTADO. Entrando no bloco 'if'.");
-    console.log("[API] - 3. O mock que será retornado é:", marketingMockV2);
     console.warn("API está em modo MOCK");
     return new Promise((resolve) =>
       setTimeout(() => resolve(marketingMockV2), 2000)
     );
   }
 
-  console.log(
-    "[FETCH] 1. Iniciando a chamada fetch para http://localhost:3005/api"
-  );
   console.log("Enviando para a o backend:", prompt);
 
   try {
@@ -43,25 +38,15 @@ const generateSuggestionsAPI = async (
       body: JSON.stringify({ promptIdea: prompt }),
     });
 
-    console.log(
-      "[FETCH] 2. Recebemos uma resposta! Objeto Response:",
-      response
-    );
-    console.log(`[FETCH] 3. Status da resposta: ${response.status}`);
-    console.log(`[FETCH] 4. Resposta OK?: ${response.ok}`);
-
     if (!response.ok) {
-      console.error("[FETCH] 5. A resposta não foi OK. Lançando erro.");
       throw new Error("O servidor respondeu com um erro. Tente novamente.");
     }
 
-    console.log("[FETCH] 6. A resposta foi OK. Tentando extrair o JSON...");
     const backendResponse: SuggestionsType = await response.json();
-    console.log("resposta do backend:", backendResponse);
 
     return backendResponse;
   } catch (error) {
-    console.error("[FETCH] X. CAIU NO CATCH! A chamada de rede falhou.", error);
+    console.error("A chamada de rede falhou.", error);
     throw error;
   }
 };
@@ -154,7 +139,7 @@ function PromptGenerator() {
 
   return (
     <>
-      <HelpInfoSheet></HelpInfoSheet>
+      <HelpInfoSheet />
       <div className=" w-full max-w-2xl bg-card p-8 rounded-xl shadow-lg space-y-6 flex flex-col items-center">
         <h1 className="text-3xl font-bold text-center ">
           Intelligent Prompt Generator
