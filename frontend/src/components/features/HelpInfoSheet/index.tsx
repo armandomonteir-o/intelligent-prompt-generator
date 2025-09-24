@@ -1,4 +1,11 @@
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
 import { Accordion } from "@radix-ui/react-accordion";
@@ -60,28 +67,48 @@ export function HelpInfoSheet() {
   return (
     <Sheet modal={false}>
       <SheetTrigger>
-        <Button className="absolute top-4 right-4 ">
-          <HelpCircle />
+        <Button variant={"ghost"} className=" absolute top-6 right-6 ">
+          <HelpCircle className="size-6" />
         </Button>
       </SheetTrigger>
       <SheetContent
         onInteractOutside={(event) => {
           event.preventDefault();
         }}
-        className="bg-card w-[350px] p-6"
+        className="bg-card w-[350px] p-4"
       >
-        <Accordion type="single" collapsible className="text-center p-4 mt-4">
-          {helpContent.map((item, index) => (
-            <AccordionItem
-              value={`item-${index}`}
-              key={item.title}
-              className="mb-4"
-            >
-              <AccordionTrigger>{item.title}</AccordionTrigger>
-              <AccordionContent>{item.description}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <SheetHeader>
+          <SheetTitle className="text-xl">
+            Guia de Criatividade para Prompts
+          </SheetTitle>
+          <SheetDescription>
+            Informativo sobre o que você precisa saber para extrair o máximo de
+            uma IA.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="overflow-y-auto custom-scrollbar">
+          <Accordion type="single" collapsible className="text-center p-4">
+            {helpContent.map((item, index) => (
+              <>
+                {index === 3 && (
+                  <div className="my-4 border-b">
+                    <h4 className="text-sm font-bold text-muted-foreground py-2">
+                      Partes estruturais do prompt
+                    </h4>
+                  </div>
+                )}
+                <AccordionItem
+                  value={`item-${index}`}
+                  key={item.title}
+                  className="mb-4"
+                >
+                  <AccordionTrigger>{item.title}</AccordionTrigger>
+                  <AccordionContent>{item.description}</AccordionContent>
+                </AccordionItem>
+              </>
+            ))}
+          </Accordion>
+        </div>
       </SheetContent>
     </Sheet>
   );
