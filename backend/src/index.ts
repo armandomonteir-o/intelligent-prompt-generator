@@ -17,7 +17,9 @@ app.post("/api", async (req, res) => {
     res.status(200).json(suggestions);
   } catch (error) {
     console.error("Erro no endpoint /api", error);
-    res.status(500).json({ message: "erro interno no servidor" });
+    res.status(500).json({
+      error: "Houve um problema ao gerar as sugestões. Tente novamente.",
+    });
   }
 });
 

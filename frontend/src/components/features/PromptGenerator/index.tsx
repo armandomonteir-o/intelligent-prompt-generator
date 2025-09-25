@@ -15,11 +15,11 @@ import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
 import { INITIAL_SECTIONS } from "@/data/promptStructure";
 import { assemblePromptString } from "@/lib/promptUtils";
 import { HelpInfoSheet } from "../HelpInfoSheet";
+import { ApiError, NetworkError } from "@/lib/errors";
 
 const generateSuggestionsAPI = async (
   prompt: string
 ): Promise<SuggestionsType> => {
-  console.log("[API] - 1. A função generateSuggestionsAPI foi chamada.");
   if (import.meta.env.VITE_MOCK_API === "true") {
     console.warn("API está em modo MOCK");
     return new Promise((resolve) =>
@@ -39,7 +39,9 @@ const generateSuggestionsAPI = async (
     });
 
     if (!response.ok) {
-      throw new Error("O servidor respondeu com um erro. Tente novamente.");
+      const errorBody = await response.json();
+      const errorMessage = errorBody.error || "Erro desconhecido no servidor";
+      throw new ApiError(errorMessage);
     }
 
     const backendResponse: SuggestionsType = await response.json();
@@ -47,7 +49,7 @@ const generateSuggestionsAPI = async (
     return backendResponse;
   } catch (error) {
     console.error("A chamada de rede falhou.", error);
-    throw error;
+    throw new NetworkError();
   }
 };
 
@@ -56,12 +58,12 @@ function PromptGenerator() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [sections, setSections] =
     useState<PromptSectionType[]>(INITIAL_SECTIONS);
-  const [isError, setIsError] = useState<string | null>(null);
   const [finalPrompt, setFinalPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptIdea(event.target.value);
+    console.log(promptIdea);
   };
 
   const hasSuggestions = sections.some(
@@ -72,8 +74,12 @@ function PromptGenerator() {
     try {
       setSections(INITIAL_SECTIONS);
       setFinalPrompt("");
-      setIsError(null);
       setIsLoading(true);
+
+      if (!promptIdea) {
+        toast.error("Insira um prompt");
+        return;
+      }
 
       const suggestionsFromAPI: SuggestionsType = await generateSuggestionsAPI(
         promptIdea
@@ -93,8 +99,11 @@ function PromptGenerator() {
 
       setSections(updatedSections);
     } catch (e) {
-      if (e instanceof Error) {
-        setIsError(e.message);
+      if (e instanceof ApiError || e instanceof NetworkError) {
+        toast.error(e.message);
+      } else {
+        toast.error("Ocorreu um erro inesperado");
+        console.error("Erro não capturado:", e);
       }
     } finally {
       setIsLoading(false);
@@ -154,7 +163,7 @@ function PromptGenerator() {
           onClick={handleGenerate}
           variant={"outline"}
           size={"lg"}
-          disabled={isLoading}
+          disabled={isLoading || promptIdea === ""}
           className="min-w-[220px]"
         >
           {isLoading ? (
@@ -214,8 +223,6 @@ function PromptGenerator() {
             <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>
           </div>
         )}
-
-        {isError && <p className="text-red-500">Erro: {isError}</p>}
       </div>
     </>
   );
