@@ -1,4 +1,4 @@
-import * as react from "react";
+import React, { useState, useMemo } from "react";
 import { CheckIcon, ChevronsUpDownIcon, PlusCircleIcon } from "lucide-react";
 import type { PromptSectionType } from "@/types/prompt.schema";
 import { cn } from "@/lib/utils";
@@ -23,8 +23,8 @@ type PromptSectionProps = {
 };
 
 function PromptSection(props: PromptSectionProps) {
-  const [open, setOpen] = react.useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = react.useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   console.log(props.section.selectedValue);
 
   const handleSelect = (currentValue: string) => {
@@ -32,7 +32,7 @@ function PromptSection(props: PromptSectionProps) {
     setOpen(false);
   };
 
-  const hasExistingSuggestion = react.useMemo(() => {
+  const hasExistingSuggestion = useMemo(() => {
     if (!searchQuery) return true;
     return props.section.suggestions.some(
       (suggestion) =>
