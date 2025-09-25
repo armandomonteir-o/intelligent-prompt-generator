@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import { CheckIcon, ChevronsUpDownIcon, PlusCircleIcon } from "lucide-react";
 import type { PromptSectionType } from "@/types/prompt.schema";
 import { cn } from "@/lib/utils";
@@ -32,14 +32,13 @@ function PromptSection(props: PromptSectionProps) {
     setOpen(false);
   };
 
-  const hasExistingSuggestion = useMemo(() => {
-    if (!searchQuery) return true;
-    return props.section.suggestions.some(
-      (suggestion) =>
-        suggestion.text.trim().toLowerCase() ===
-        searchQuery.trim().toLowerCase()
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+
+  const hasExistingSuggestion =
+    !normalizedSearchQuery ||
+    props.section.suggestions.some((suggestion) =>
+      suggestion.text.trim().toLowerCase().includes(normalizedSearchQuery)
     );
-  }, [searchQuery, props.section.suggestions]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -71,9 +70,7 @@ function PromptSection(props: PromptSectionProps) {
                 value={searchQuery}
                 onSelect={handleSelect}
                 className={
-                  !searchQuery || hasExistingSuggestion
-                    ? "hidden"
-                    : "flex items-center"
+                  hasExistingSuggestion ? "hidden" : "flex items-center"
                 }
               >
                 {props.section.selectedValue === searchQuery ? (
