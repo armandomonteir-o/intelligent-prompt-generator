@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
 import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
 import { INITIAL_SECTIONS } from "@/data/promptStructure";
@@ -60,10 +61,10 @@ function PromptGenerator() {
     useState<PromptSectionType[]>(INITIAL_SECTIONS);
   const [finalPrompt, setFinalPrompt] = useState<string>("");
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [addThinkingStep, setaddThinkingStep] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPromptIdea(event.target.value);
-    console.log(promptIdea);
   };
 
   const hasSuggestions = sections.some(
@@ -121,16 +122,25 @@ function PromptGenerator() {
   };
 
   const handleAssemblePrompt = () => {
-    const finalString = assemblePromptString(sections);
+    const mountedPrompt = assemblePromptString(sections);
 
-    if (!finalString) {
+    if (!mountedPrompt) {
       toast.error(
         "Por favor, preencha todas as seções antes de montar o prompt"
       );
       return;
     }
 
-    setFinalPrompt(finalString);
+    let promptFinal = mountedPrompt;
+
+    if (addThinkingStep) {
+      const thinkingStep =
+        "(Pense passo a passo antes de me dar a resposta final, detalhando seu raciocínio para garantir a melhor qualidade possível na resposta.) \n\n";
+
+      promptFinal = thinkingStep + promptFinal;
+    }
+
+    setFinalPrompt(promptFinal);
   };
 
   const isFormComplete =
@@ -145,6 +155,9 @@ function PromptGenerator() {
       setTimeout(() => setIsCopied(false), 2000);
     });
   };
+
+  const handleCheckedChange = (checked: boolean | "indeterminate") =>
+    setaddThinkingStep(checked === true);
 
   return (
     <>
@@ -183,21 +196,37 @@ function PromptGenerator() {
             construa seu esquema de prompt.
           </p>
         ) : (
-          <Accordion type="multiple" className="w-max p-2">
-            {sections.map((section) => (
-              <AccordionItem key={section.id} value={`item-${section.id}`}>
-                <AccordionTrigger className="text-md font-semibold">
-                  <h2>{section.displayName} </h2>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PromptSection
-                    section={section}
-                    onValueChange={handleSectionChange}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <>
+            <Accordion type="multiple" className="w-max p-2">
+              {sections.map((section) => (
+                <AccordionItem key={section.id} value={`item-${section.id}`}>
+                  <AccordionTrigger className="text-md font-semibold">
+                    <h2>{section.displayName} </h2>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <PromptSection
+                      section={section}
+                      onValueChange={handleSectionChange}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+            <div>
+              <Checkbox
+                id="checkbox"
+                checked={addThinkingStep}
+                onCheckedChange={handleCheckedChange}
+                className="bg-slate-300 mr-2 cursor-pointer"
+              />
+              <label
+                className="text-md font-semibold select-none cursor-pointer"
+                htmlFor="checkbox"
+              >
+                Ativar "Think before answer"
+              </label>
+            </div>
+          </>
         )}
 
         {isFormComplete && (
