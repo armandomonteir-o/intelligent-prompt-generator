@@ -2,21 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import type { PromptSectionType, SuggestionsType } from "@/types/prompt.schema";
-import PromptSection from "../PromptSection";
+
 import { toast } from "sonner";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
+
 import { Checkbox } from "@/components/ui/checkbox";
-import { CopyIcon, CheckIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
 import { INITIAL_SECTIONS } from "@/data/promptStructure";
 import { assemblePromptString } from "@/lib/promptUtils";
 import { HelpInfoSheet } from "../HelpInfoSheet";
 import { ApiError, NetworkError } from "@/lib/errors";
+import { FinalPromptDisplay } from "../FinalPromptDisplay";
+import { SuggestionsAccordion } from "../SuggestionsAccordion";
 
 const generateSuggestionsAPI = async (
   prompt: string
@@ -60,7 +57,6 @@ function PromptGenerator() {
   const [sections, setSections] =
     useState<PromptSectionType[]>(INITIAL_SECTIONS);
   const [finalPrompt, setFinalPrompt] = useState<string>("");
-  const [isCopied, setIsCopied] = useState<boolean>(false);
   const [addThinkingStep, setaddThinkingStep] = useState<boolean>(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -146,16 +142,6 @@ function PromptGenerator() {
   const isFormComplete =
     sections.length > 0 && sections.every((section) => section.selectedValue);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(finalPrompt).then(() => {
-      toast.success("Prompt copiado para a área de transferência!", {
-        className: "opacity-50",
-      });
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    });
-  };
-
   const handleCheckedChange = (checked: boolean | "indeterminate") =>
     setaddThinkingStep(checked === true);
 
@@ -197,21 +183,10 @@ function PromptGenerator() {
           </p>
         ) : (
           <>
-            <Accordion type="multiple" className="w-max p-2">
-              {sections.map((section) => (
-                <AccordionItem key={section.id} value={`item-${section.id}`}>
-                  <AccordionTrigger className="text-md font-semibold">
-                    <h2>{section.displayName} </h2>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <PromptSection
-                      section={section}
-                      onValueChange={handleSectionChange}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            <SuggestionsAccordion
+              sections={sections}
+              onSectionChange={handleSectionChange}
+            />
             <div>
               <Checkbox
                 id="checkbox"
@@ -233,25 +208,7 @@ function PromptGenerator() {
           <Button onClick={handleAssemblePrompt}>Montar Prompt Final</Button>
         )}
 
-        {finalPrompt != "" && (
-          <div className=" bg-slate-200 dark:bg-slate-800 border rounded-md p-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-foreground">
-                {" "}
-                Seu Prompt Final
-              </h3>
-              <Button onClick={handleCopy} variant={"default"} size={"icon"}>
-                {isCopied ? (
-                  <CheckIcon className="size-4" />
-                ) : (
-                  <CopyIcon className="size-4"></CopyIcon>
-                )}
-              </Button>
-            </div>
-
-            <pre className="text-sm whitespace-pre-wrap">{finalPrompt}</pre>
-          </div>
-        )}
+        <FinalPromptDisplay finalPrompt={finalPrompt} />
       </div>
     </>
   );
