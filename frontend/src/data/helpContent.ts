@@ -57,6 +57,11 @@ export const helpContent: HelpContentGroup[] = [
         description:
           "Esta é a 'apresentação do prato'. Definir o 'Formato' instrui a IA sobre como organizar a resposta. É a diferença entre o Chef te contar uma história sobre os ingredientes ou te entregar uma ficha técnica organizada. Às vezes, você quer a história. Outras, você só precisa da lista. Ao pedir um formato específico como 'uma lista em tópicos', 'uma tabela com duas colunas' ou 'um guia passo a passo', você garante que a resposta venha estruturada exatamente como você precisa, economizando seu tempo e facilitando o uso da informação.",
       },
+      {
+        title: "Think before Answer",
+        description:
+          "Isso é como pedir ao seu Chef para, antes de começar a cozinhar, ele parar e verbalizar todo o seu plano de ataque. 'Primeiro, vou selar a carne para manter a suculência; depois, vou usar o fundo da panela para criar um molho rico...'. Ao forçar a IA a detalhar seu raciocínio passo a passo antes de dar a resposta final, nós a incentivamos a não pegar atalhos, a considerar mais variáveis e a estruturar a lógica de forma mais coesa. O resultado é quase sempre uma resposta final muito mais inteligente, completa e bem pensada.",
+      },
     ],
   },
 ];
