@@ -112,12 +112,8 @@ USER INPUT:
       const cleanText = text.replace("```json", "").replace("```", "").trim();
       const jsonData = JSON.parse(cleanText);
       const suggestions: SuggestionsType = suggestionsSchema.parse(jsonData);
-      console.log("JSON parseado e validado com sucesso!");
-      console.log(suggestions);
       return suggestions;
     } catch (error) {
-      console.log("Falha ao fazer o parsing ou validar o JSON da IA: ", text);
-      console.error(error);
       throw new Error(
         "A IA retornou uma resposta em formato inválido ou inesperado."
       );

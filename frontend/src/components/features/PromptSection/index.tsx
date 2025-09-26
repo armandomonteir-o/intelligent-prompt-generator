@@ -25,7 +25,6 @@ type PromptSectionProps = {
 function PromptSection(props: PromptSectionProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  console.log(props.section.selectedValue);
 
   const handleSelect = (currentValue: string) => {
     props.onValueChange(props.section.id, currentValue);

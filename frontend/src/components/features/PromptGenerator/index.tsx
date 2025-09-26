@@ -2,9 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import type { PromptSectionType, SuggestionsType } from "@/types/prompt.schema";
-
 import { toast } from "sonner";
-
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { marketingMockV2 } from "@/mocks/v2/marketingMockV2";
@@ -24,8 +22,6 @@ const generateSuggestionsAPI = async (
       setTimeout(() => resolve(marketingMockV2), 2000)
     );
   }
-
-  console.log("Enviando para a o backend:", prompt);
 
   try {
     const response = await fetch("http://localhost:3005/api", {
