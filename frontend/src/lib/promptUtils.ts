@@ -10,7 +10,7 @@ export const assemblePromptString = (sections: PromptSectionType[]): string => {
     (section) => `**${section.displayName}:**\n${section.selectedValue}`
   );
 
-  const finalString = allSectionsText.join("\n\n");
+  const finalString = allSectionsText.join("\n\n------\n\n");
   return finalString;
 };
 

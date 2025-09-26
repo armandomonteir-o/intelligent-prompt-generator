@@ -135,7 +135,7 @@ function PromptGenerator() {
 
     if (addThinkingStep) {
       const thinkingStep =
-        "(Pense passo a passo antes de me dar a resposta final, detalhando seu raciocínio para garantir a melhor qualidade possível na resposta.) \n\n";
+        "**Pense passo a passo antes de me dar a resposta final, detalhando seu raciocínio para garantir a melhor qualidade possível na resposta.** \n\n------\n\n";
 
       promptFinal = thinkingStep + promptFinal;
     }
