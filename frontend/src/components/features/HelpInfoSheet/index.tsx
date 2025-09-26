@@ -20,7 +20,7 @@ import React from "react";
 export function HelpInfoSheet() {
   return (
     <Sheet modal={false}>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <Button variant={"ghost"} className=" absolute top-6 right-6 ">
           <HelpCircle className="size-6" />
         </Button>
