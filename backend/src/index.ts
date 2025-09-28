@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { SuggestionsGenerator } from "./services/SuggestionGenerator";
+import { dayLimiter, minuteLimiter } from "./middlewares/rateLimit";
 
 const app = express();
-const port = 3005;
+const port: number = 3005;
 
 app.use(cors());
+app.use("/api", minuteLimiter, dayLimiter);
 app.use(express.json());
 
 app.post("/api", async (req, res) => {
