@@ -2,13 +2,18 @@ import express from "express";
 import cors from "cors";
 import { SuggestionsGenerator } from "./services/SuggestionGenerator";
 import { dayLimiter, minuteLimiter } from "./middlewares/rateLimit";
+import { config } from "./config";
 
 const app = express();
-const port: number = 3005;
+const port: number = config.PORT;
 
 app.use(cors());
 app.use("/api", minuteLimiter, dayLimiter);
 app.use(express.json());
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 app.post("/api", async (req, res) => {
   try {

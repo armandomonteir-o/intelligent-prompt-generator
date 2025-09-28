@@ -5,7 +5,9 @@ import {
 } from "../types/prompt.schema";
 import type { PromptSectionType } from "../types/prompt.schema";
 import type { SuggestionsType } from "../types/prompt.schema";
-const API_KEY = process.env.GEMINI_API_KEY;
+import { config } from "src/config";
+
+const API_KEY = config.GEMINI_API_KEY;
 
 export class SuggestionsGenerator {
   public static async generate(promptIdea: string): Promise<SuggestionsType> {
