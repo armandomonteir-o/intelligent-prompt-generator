@@ -1,7 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 import { config } from "src/config";
+import fs from "fs/promises";
+import path from "path";
+import { loadTemplate } from "src/utils/loadTemplate";
 
 const API_KEY = config.GEMINI_API_KEY;
+
+const templatePath = path.resolve(
+  __dirname,
+  "../prompt_templates/refine_prompt_markdown.txt"
+);
+
+let promptTemplate: string | null = null;
 
 export class PromptRefiner {
   public static async refine(assembledPrompt: string): Promise<string> {
@@ -11,30 +21,46 @@ export class PromptRefiner {
 
     const genAI = new GoogleGenAI({ apiKey: API_KEY });
 
-    const promptParaIA = `
-      Você é um especialista em engenharia de prompts. Sua tarefa é reescrever o prompt estruturado abaixo, tornando-o mais coeso, natural e eficaz.
-      Combine as seções de forma fluida, sem apenas listá-las. Mantenha o significado original de cada seção.
-      Se o prompt incluir uma instrução para "pensar passo a passo", mantenha-a no início do prompt final.
+    let template: string;
 
-      PROMPT ORIGINAL ESTRUTURADO:
-      \`\`\`
-      ${assembledPrompt}
-      \`\`\`
-
-      REESCREVA O PROMPT ABAIXO:
-    `;
-
-    const response = await genAI.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: promptParaIA,
-    });
-
-    const text = response.text;
-
-    if (!text) {
-      throw new Error("Requisição para a IA não teve sucesso");
+    try {
+      template = await loadTemplate(templatePath);
+    } catch (error) {
+      console.error("Falha ao obter template no PromptRefiner.");
+      throw error;
     }
 
-    return text;
+    const promptParaIA = template.replace(
+      "{{ASSEMBLED_PROMPT}}",
+      assembledPrompt
+    );
+
+    try {
+      const response = await genAI.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: promptParaIA,
+      });
+
+      const text = response.text;
+
+      if (!text) {
+        throw new Error("AI did not return text for the refined prompt.");
+      }
+
+      if (!text.includes(":") || !text.includes("-------")) {
+        console.warn(
+          "AI response might not have maintained the expected Markdown structure."
+        );
+      }
+      return text.trim();
+    } catch (error) {
+      console.error(
+        "Error calling Gemini API for refinement (Markdown structure):",
+        error
+      );
+      throw new Error(
+        "Failed to refine prompt with AI (preserving structure)."
+      );
+    }
   }
 }
