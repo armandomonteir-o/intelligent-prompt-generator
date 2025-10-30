@@ -1,8 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
-import { config } from "src/config";
+import { config } from "../config";
 import fs from "fs/promises";
 import path from "path";
-import { loadTemplate } from "src/utils/loadTemplate";
+import { loadTemplate } from "../utils/loadTemplate";
 
 const API_KEY = config.GEMINI_API_KEY;
 

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022" /* Target ECMAScript version */,
     "module": "NodeNext" /* Specify module code generation */,
-    "moduleResolution": "NodeNext" /* Resolves the error you saw */,
+    "moduleResolution": "NodeNext",
     "baseUrl": "." /* Base directory for module resolution */,
     "outDir": "./dist" /* Redirect output structure to the directory */,
     "esModuleInterop": true /* Enables compatibility with CommonJS modules */,

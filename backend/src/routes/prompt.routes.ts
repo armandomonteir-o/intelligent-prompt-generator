@@ -2,8 +2,8 @@ import { Router, Request, Response } from "express";
 import {
   generateSuggestionsController,
   refinePromptController,
-} from "src/controllers/prompt.controller";
-import { dayLimiter, minuteLimiter } from "src/middlewares/rateLimit";
+} from "../controllers/prompt.controller";
+import { dayLimiter, minuteLimiter } from "../middlewares/rateLimit";
 
 export const promptRoutes: Router = Router();
 

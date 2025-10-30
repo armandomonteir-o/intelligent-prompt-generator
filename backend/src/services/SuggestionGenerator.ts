@@ -7,7 +7,7 @@ import type { PromptSectionType } from "../types/prompt.schema";
 import type { SuggestionsType } from "../types/prompt.schema";
 import { config } from "src/config";
 import path from "path";
-import { loadTemplate } from "src/utils/loadTemplate";
+import { loadTemplate } from "../utils/loadTemplate";
 
 const API_KEY = config.GEMINI_API_KEY;
 

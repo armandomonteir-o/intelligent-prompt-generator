@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { SuggestionsGenerator } from "src/services/SuggestionGenerator";
-import { PromptRefiner } from "src/services/PromptRefiner";
+import { SuggestionsGenerator } from "../services/SuggestionGenerator";
+import { PromptRefiner } from "../services/PromptRefiner";
 
 export const generateSuggestionsController = async (
   req: Request,
