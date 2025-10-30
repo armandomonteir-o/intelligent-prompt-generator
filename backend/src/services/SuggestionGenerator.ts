@@ -5,7 +5,7 @@ import {
 } from "../types/prompt.schema";
 import type { PromptSectionType } from "../types/prompt.schema";
 import type { SuggestionsType } from "../types/prompt.schema";
-import { config } from "src/config";
+import { config } from "../config";
 import path from "path";
 import { loadTemplate } from "../utils/loadTemplate";
 

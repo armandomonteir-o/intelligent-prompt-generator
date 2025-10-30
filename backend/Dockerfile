@@ -10,6 +10,7 @@ RUN yarn build
 FROM node:22-alpine AS runner
 WORKDIR /app
 COPY --from=builder /app/package.json /app/yarn.lock ./
+COPY --from=builder /app/src/prompt_templates ./dist/prompt_templates
 RUN yarn install --production --immutable
 COPY --from=builder /app/dist ./dist
 EXPOSE 3005
