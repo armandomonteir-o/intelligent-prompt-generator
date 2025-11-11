@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: builder
+    ports:
+      - "3005:3005"
+    env_file: ./backend/.env
+    command: ["yarn", "dev"]
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+      target: builder
+    ports:
+      - "5173:5173"
+    depends_on: [backend]
+    command: ["yarn", "dev"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
