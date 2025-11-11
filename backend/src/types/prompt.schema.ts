@@ -25,3 +25,11 @@ export type SuggestionsType = z.infer<typeof suggestionsSchema>;
 export const promptResponseSchema = z.array(promptSectionSchema);
 
 export type PromptSectionType = z.infer<typeof promptSectionSchema>;
+
+export const refineBodySchema = z.strictObject({
+  promptToRefine: z.string().min(10),
+});
+
+export const suggestionsBodySchema = z.strictObject({
+  promptIdea: z.string().min(5),
+});
