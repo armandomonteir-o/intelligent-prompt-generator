@@ -1,0 +1,1 @@
+process.env.GEMINI_API_KEY = "MOCK_API_KEY_FOR_TESTING";
