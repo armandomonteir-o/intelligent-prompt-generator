@@ -1,7 +1,7 @@
 import rateLimit, { RateLimitRequestHandler } from "express-rate-limit";
 
 export const minuteLimiter: RateLimitRequestHandler = rateLimit({
-  windowMs: 60000, // 1 minuto
+  windowMs: 60000, // 1 minute
   limit: 3,
   message: {
     error:
@@ -11,9 +11,9 @@ export const minuteLimiter: RateLimitRequestHandler = rateLimit({
   legacyHeaders: false,
 });
 
-// Limite diário
+// Daily limit
 export const dayLimiter: RateLimitRequestHandler = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000, // 24 horas
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
   limit: 15,
   message: { error: "Você atingiu o limite diário de requisições." },
   standardHeaders: true,

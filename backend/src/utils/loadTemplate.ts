@@ -18,11 +18,12 @@ export async function loadTemplate(templatePath: string) {
     return promptTemplate;
   } catch (error) {
     console.error(
-      `Erro crítico ao carregar o template do prompt: ${normalizedPath}`,
+      `Critical error trying to load the template: ${normalizedPath}`,
       error
     );
 
-    let errorMessage = "Um erro desconhecido ocorreu ao carregar o template.";
+    let errorMessage =
+      "An unknown error happened when trying to load the template";
 
     if (error instanceof Error) {
       errorMessage = error.message;
@@ -31,12 +32,12 @@ export async function loadTemplate(templatePath: string) {
     }
 
     throw new Error(
-      `Não foi possível carregar o template do prompt em: ${normalizedPath}. Detalhes: ${errorMessage}`
+      `Could not load prompt template at: ${normalizedPath}. Details: ${errorMessage}`
     );
   }
 }
 
 export function clearTemplateCache() {
   templateCache.clear();
-  console.log("Cache de templates limpo.");
+  console.log("Template cache cleared");
 }

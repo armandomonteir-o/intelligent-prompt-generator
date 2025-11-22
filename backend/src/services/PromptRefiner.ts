@@ -11,8 +11,6 @@ const templatePath = path.resolve(
   "../prompt_templates/refine_prompt_markdown.txt"
 );
 
-let promptTemplate: string | null = null;
-
 export class PromptRefiner {
   public static async refine(assembledPrompt: string): Promise<string> {
     if (!API_KEY) {
