@@ -6,5 +6,6 @@ export default defineConfig({
   test: {
     clearMocks: true,
     setupFiles: ["./src/test-setup.ts"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
   },
 });
