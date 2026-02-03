@@ -37,7 +37,7 @@ The bottleneck is always the same: manually crafting prompts without guidance le
 
 ## Key Features
 
-- **AI-Powered Suggestions**: Leverages Google Gemini 2.0 Flash to generate intelligent, context-aware suggestions for each prompt component
+- **AI-Powered Suggestions**: Leverages Google Gemini 2.5 Flash to generate intelligent, context-aware suggestions for each prompt component
 - **Structured Prompt Framework**: Guides users through five essential prompt elements: Context, Objectives, Constraints, Output Format, and Examples
 - **Real-time Refinement**: Assembles and polishes the final prompt using AI for optimal coherence
 - **Rate Limiting**: Built-in protection with dual-tier rate limiting (per-minute and per-day limits)
