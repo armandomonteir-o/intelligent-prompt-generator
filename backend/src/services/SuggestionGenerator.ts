@@ -1,9 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import {
-  promptResponseSchema,
-  suggestionsSchema,
-} from "../types/prompt.schema";
-import type { PromptSectionType } from "../types/prompt.schema";
+import { suggestionsSchema } from "../types/prompt.schema";
 import type { SuggestionsType } from "../types/prompt.schema";
 import { config } from "../config";
 import path from "path";
@@ -13,7 +9,7 @@ const API_KEY = config.GEMINI_API_KEY;
 
 const templatePath = path.resolve(
   __dirname,
-  "../prompt_templates/generate_suggestions_markdown.txt"
+  "../prompt_templates/generate_suggestions_markdown.txt",
 );
 
 export class SuggestionsGenerator {
@@ -36,7 +32,7 @@ export class SuggestionsGenerator {
     const promptParaIA = template.replace("{{promptIdea}}", promptIdea);
 
     const response = await genAI.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: promptParaIA,
     });
 
@@ -51,9 +47,9 @@ export class SuggestionsGenerator {
       const jsonData = JSON.parse(cleanText);
       const suggestions: SuggestionsType = suggestionsSchema.parse(jsonData);
       return suggestions;
-    } catch (error) {
+    } catch {
       throw new Error(
-        "A IA retornou uma resposta em formato inválido ou inesperado."
+        "A IA retornou uma resposta em formato inválido ou inesperado.",
       );
     }
   }

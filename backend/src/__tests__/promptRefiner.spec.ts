@@ -1,4 +1,4 @@
-import { expect, test, vi, describe, afterEach, beforeEach } from "vitest";
+import { expect, test, vi, describe, beforeEach } from "vitest";
 
 import { PromptRefiner } from "../services/PromptRefiner";
 
@@ -42,7 +42,7 @@ describe("PromptRefiner Service", () => {
     expect(loadTemplate).toHaveBeenCalled();
 
     expect(generateContentMock).toHaveBeenCalledWith({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: "Template mockado com meu prompt original",
     });
   });
@@ -52,7 +52,7 @@ describe("PromptRefiner Service", () => {
     vi.mocked(loadTemplate).mockRejectedValue(templateError);
 
     await expect(PromptRefiner.refine("any prompt")).rejects.toThrow(
-      "Template file not found"
+      "Template file not found",
     );
   });
 
@@ -63,7 +63,7 @@ describe("PromptRefiner Service", () => {
     generateContentMock.mockRejectedValue(apiError);
 
     await expect(PromptRefiner.refine("any prompt")).rejects.toThrow(
-      "Failed to refine prompt with AI (preserving structure)."
+      "Failed to refine prompt with AI (preserving structure).",
     );
   });
 
@@ -75,7 +75,7 @@ describe("PromptRefiner Service", () => {
     });
 
     await expect(PromptRefiner.refine("any prompt")).rejects.toThrow(
-      "Failed to refine prompt with AI (preserving structure)"
+      "Failed to refine prompt with AI (preserving structure)",
     );
   });
 });

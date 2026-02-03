@@ -1,6 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 import { config } from "../config";
-import fs from "fs/promises";
 import path from "path";
 import { loadTemplate } from "../utils/loadTemplate";
 
@@ -8,7 +7,7 @@ const API_KEY = config.GEMINI_API_KEY;
 
 const templatePath = path.resolve(
   __dirname,
-  "../prompt_templates/refine_prompt_markdown.txt"
+  "../prompt_templates/refine_prompt_markdown.txt",
 );
 
 export class PromptRefiner {
@@ -30,12 +29,12 @@ export class PromptRefiner {
 
     const promptParaIA = template.replace(
       "{{ASSEMBLED_PROMPT}}",
-      assembledPrompt
+      assembledPrompt,
     );
 
     try {
       const response = await genAI.models.generateContent({
-        model: "gemini-2.0-flash",
+        model: "gemini-2.5-flash",
         contents: promptParaIA,
       });
 
@@ -47,17 +46,17 @@ export class PromptRefiner {
 
       if (!text.includes(":") || !text.includes("-------")) {
         console.warn(
-          "AI response might not have maintained the expected Markdown structure."
+          "AI response might not have maintained the expected Markdown structure.",
         );
       }
       return text.trim();
     } catch (error) {
       console.error(
         "Error calling Gemini API for refinement (Markdown structure):",
-        error
+        error,
       );
       throw new Error(
-        "Failed to refine prompt with AI (preserving structure)."
+        "Failed to refine prompt with AI (preserving structure).",
       );
     }
   }

@@ -1,4 +1,4 @@
-import { expect, test, vi, describe, afterEach, beforeEach } from "vitest";
+import { expect, test, vi, describe, beforeEach } from "vitest";
 import { SuggestionsGenerator } from "../services/SuggestionGenerator";
 import { GoogleGenAI } from "@google/genai";
 
@@ -50,7 +50,7 @@ describe("SuggestionsGenerator Service", () => {
     expect(result.role).toHaveLength(3);
     expect(loadTemplate).toHaveBeenCalled();
     expect(generateContentMock).toHaveBeenCalledWith({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: expect.stringContaining(mockPromptIdea),
     });
   });
@@ -63,7 +63,7 @@ describe("SuggestionsGenerator Service", () => {
     });
 
     await expect(SuggestionsGenerator.generate("idea")).rejects.toThrow(
-      "A IA retornou uma resposta em formato inválido ou inesperado."
+      "A IA retornou uma resposta em formato inválido ou inesperado.",
     );
   });
 
@@ -80,7 +80,7 @@ describe("SuggestionsGenerator Service", () => {
     });
 
     await expect(SuggestionsGenerator.generate("idea")).rejects.toThrow(
-      "A IA retornou uma resposta em formato inválido ou inesperado."
+      "A IA retornou uma resposta em formato inválido ou inesperado.",
     );
   });
 });

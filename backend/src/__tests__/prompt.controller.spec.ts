@@ -1,4 +1,4 @@
-import { expect, test, vitest, vi, describe, afterEach } from "vitest";
+import { expect, test, vi, describe, afterEach } from "vitest";
 import request from "supertest";
 import { app } from "../app";
 
