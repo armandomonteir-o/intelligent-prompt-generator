@@ -7,5 +7,17 @@ export default defineConfig({
     clearMocks: true,
     setupFiles: ["./src/test-setup.ts"],
     exclude: ["**/node_modules/**", "**/dist/**"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "node_modules/**",
+        "dist/**",
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/test-setup.ts",
+        "**/types/**",
+      ],
+    },
   },
 });

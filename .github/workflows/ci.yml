@@ -50,17 +50,17 @@ jobs:
             frontend/yarn.lock
             backend/yarn.lock
 
-      - name: Test Backend
+      - name: Test Backend with Coverage
         working-directory: ./backend
         run: |
           yarn install --frozen-lockfile
-          yarn test
+          yarn test:coverage
 
-      - name: Test Frontend
+      - name: Test Frontend with Coverage
         working-directory: ./frontend
         run: |
           yarn install --frozen-lockfile
-          yarn test --run
+          yarn test:coverage
 
   build:
     name: Build Docker

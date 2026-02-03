@@ -26,3 +26,6 @@ dist-ssr
 learnings.md
 prompt-to-develop.md
 .env
+
+# Coverage
+coverage
