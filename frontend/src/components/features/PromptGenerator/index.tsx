@@ -27,7 +27,7 @@ function PromptGenerator() {
   };
 
   const hasSuggestions = sections.some(
-    (section) => section.suggestions.length > 0
+    (section) => section.suggestions.length > 0,
   );
 
   const handleGenerateSections = async () => {
@@ -41,9 +41,8 @@ function PromptGenerator() {
         return;
       }
 
-      const suggestionsFromAPI: SuggestionsType = await generateSuggestions(
-        promptIdea
-      );
+      const suggestionsFromAPI: SuggestionsType =
+        await generateSuggestions(promptIdea);
 
       const updatedSections = INITIAL_SECTIONS.map((section) => {
         const newSuggestions = suggestionsFromAPI[section.id];
@@ -76,8 +75,8 @@ function PromptGenerator() {
       currentSections.map((section) =>
         section.id === sectionId
           ? { ...section, selectedValue: newValue }
-          : section
-      )
+          : section,
+      ),
     );
   };
 
@@ -86,7 +85,7 @@ function PromptGenerator() {
 
     if (!mountedPrompt) {
       toast.error(
-        "Por favor, preencha todas as seções antes de montar o prompt"
+        "Por favor, preencha todas as seções antes de montar o prompt",
       );
       return;
     }
