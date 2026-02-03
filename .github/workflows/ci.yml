@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: |
+            frontend/yarn.lock
+            backend/yarn.lock
+
+      - name: Lint Frontend
+        working-directory: ./frontend
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint
+
+      - name: Lint Backend
+        working-directory: ./backend
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint
+
+  test:
+    name: Test
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: |
+            frontend/yarn.lock
+            backend/yarn.lock
+
+      - name: Test Backend
+        working-directory: ./backend
+        run: |
+          yarn install --frozen-lockfile
+          yarn test
+
+      - name: Test Frontend
+        working-directory: ./frontend
+        run: |
+          yarn install --frozen-lockfile
+          yarn test --run
+
+  build:
+    name: Build Docker
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Frontend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
